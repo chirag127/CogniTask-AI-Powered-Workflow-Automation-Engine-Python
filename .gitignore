@@ -1,104 +1,63 @@
-# Byte-compiled / optimized / DLL files
+# Python Byte-Code / Compiled Files
+*.pyc
 __pycache__/
-*.py[cod]
-*$py.class
+*.pyo
+*.pyd
 
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# pyenv
-.python-version
-
-# celery beat schedule file
-celerybeat-schedule
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
+# Virtual Environment Directories
+.venv/
 env/
 venv/
 ENV/
-env.bak/
-venv.bak/
 
-# Spyder project settings
-.spyderproject
-.spyproject
+# IDE / Editor Specific
+.vscode/
+.idea/
+*.swp
+*.swo
+*.DS_Store
 
-# Rope project settings
-.ropeproject
+# Build / Distribution Artifacts
+dist/
+build/
+*.egg-info/
+wheelhouse/
 
-# mkdocs documentation
-/site
+# Test Artifacts
+.pytest_cache/
+htmlcov/
+.coverage
 
-# mypy
-.mypy_cache/
+# OS Specific
+Thumbs.db
+
+# Dependency Management (uv/pip/etc.)
+*.lock
+
+# Linting/Formatting Cache
+.ruff_cache/
+.biome/
+
+# Secrets / Environment Variables (if not managed elsewhere)
+*.env
+!
+.env.example
+
+# Documentation Generator Cache
+_docs/
+docs/_build/
+
+# Specific to AI/LLM models/outputs if they are large and not committed
+# (Adjust this based on actual model/data storage strategy)
+models/
+output/
+results/
+
+# Large data files that should not be committed (e.g., datasets, downloaded model weights)
+# data/
+# datasets/
+# weights/
+
+# Temporary files
+*.tmp
+*.temp
