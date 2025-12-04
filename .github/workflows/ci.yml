@@ -1,0 +1,89 @@
+# CI Workflow for CogniTask-AI-Powered-Workflow-Automation-Engine-Python
+
+# This workflow executes Continuous Integration checks for the repository.
+# It ensures code quality, dependency integrity, and test coverage.
+# It's designed for Python projects utilizing uv, Ruff, and Pytest, as per Apex standards.
+
+name: CI Pipeline
+
+# Controls when the workflow will run
+# Runs on pushes to main branch and on pull requests targeting main
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize, reopened ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This job builds and tests the Python application
+  build_and_test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    # Strategy matrix to test with different Python versions
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+
+    steps:
+      # 1. Checkout repository code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for accurate diffs
+
+      # 2. Set up Python environment using uv
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'uv'
+          cache-dependency-path: '**/pyproject.toml'
+
+      # 3. Install dependencies using uv
+      - name: Install Dependencies with uv
+        run: | # Use shell commands to manage dependencies
+          uv --version
+          uv pip install --system --frozen --quiet --no-cache-dir
+          # Install dev dependencies for linting and testing
+          uv pip install --system --frozen --quiet --no-cache-dir "ruff[lint,format,pyproject]" "pytest"
+
+      # 4. Run Ruff for linting and formatting checks
+      # --fix is not used here to ensure it's a check, not a modification
+      - name: Run Ruff Lint and Format Checks
+        run: |
+          ruff --version
+          ruff check .
+          ruff format --check .
+
+      # 5. Run Pytest for unit and integration tests
+      # --cov for code coverage
+      - name: Run Pytest with Coverage
+        run: |
+          pytest --cov=cognitask --cov-report=xml:coverage.xml
+
+      # 6. Upload code coverage report to Codecov
+      # This step requires a CODECOV_TOKEN in secrets
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v4
+        if: github.ref == 'refs/heads/main' && matrix.python-version == '3.11' # Upload only once from main branch on a specific Python version
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          flags: python-${{ matrix.python-version }}
+          name: CogniTask-Python
+
+      # 7. Optional: Cache downloaded wheels/packages for faster subsequent builds
+      # uv handles caching internally, but explicit caching can be configured if needed.
+      # This step is illustrative; uv's built-in caching is generally sufficient.
+      - name: Cache Python Packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv # Path to uv's cache directory
+          key: ${{ runner.os }}-uv-${{ hashFiles('**/uv-lock.toml', '**/pyproject.toml') }}
+          restore-keys: | # Fallback keys for cache restoration
+            ${{ runner.os }}-uv-
